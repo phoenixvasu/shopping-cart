@@ -4,7 +4,7 @@
 export const getProducts = async () => {
   try {
     const response = await fetch(
-      "http://shopping-cart-8.onrender.com/api/products"
+      "https://shopping-cart-8.onrender.com/api/products"
     );
 
     // Check if the response is successful (status code 200)
@@ -36,7 +36,7 @@ export const getProducts = async () => {
 export const deleteProduct = async (productId) => {
   try {
     const response = await fetch(
-      `http://shopping-cart-8.onrender.com/api/products/${productId}`,
+      `https://shopping-cart-8.onrender.com/api/products/${productId}`,
       {
         method: "DELETE", // HTTP method to delete a product
         headers: {
@@ -75,7 +75,7 @@ export const deleteProduct = async (productId) => {
 export const addProduct = async (newProduct) => {
   try {
     const response = await fetch(
-      "http://shopping-cart-8.onrender.com/api/products",
+      "https://shopping-cart-8.onrender.com/api/products",
       {
         method: "POST",
         headers: {
