@@ -1,0 +1,67 @@
+/* src/styles/Header.css */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50; /* Dark blue-gray background */
+    padding: 1rem 2rem;
+    color: #ecf0f1; /* Light gray text */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  }
+  
+  .logo h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #e74c3c; /* Vibrant red color for the logo */
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .logo a {
+    text-decoration: none;
+    color: inherit; /* Keep logo text color */
+  }
+  
+  .nav ul {
+    list-style: none; /* Remove bullet points */
+    display: flex;
+    gap: 1.5rem; /* Spacing between links */
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav li {
+    font-size: 1.2rem;
+  }
+  
+  .nav a {
+    text-decoration: none; /* Remove underline from links */
+    color: #ecf0f1; /* Light gray text */
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+  
+  .nav a:hover {
+    color: #e74c3c; /* Change to red on hover */
+  }
+  
+  .cart-count {
+    background-color: #e74c3c; /* Red background for cart count */
+    color: #fff; /* White text for cart count */
+    padding: 0.2rem 0.5rem;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    margin-left: 0.3rem;
+  }
+  
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column; /* Stack logo and nav on smaller screens */
+      align-items: flex-start;
+    }
+  
+    .nav ul {
+      flex-direction: column; /* Stack links vertically */
+      gap: 1rem;
+    }
+  }
+  

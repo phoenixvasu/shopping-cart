@@ -1,0 +1,179 @@
+/* src/styles/App.css */
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Basic container for layout */
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Header and Footer Styles */
+  header,
+  footer {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+  }
+  
+  header h1,
+  footer p {
+    margin: 0;
+  }
+  
+  /* Button Styles */
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  
+  /* Main Content Area */
+  main {
+    padding: 20px 0;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  /* Product Listing Styles */
+  .product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .product-item {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+  
+  .product-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .product-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .product-item p {
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 15px;
+  }
+  
+  .product-item button {
+    background-color: #f44336;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .product-item button:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Footer Styles */
+  footer {
+    margin-top: 20px;
+  }
+  
+  footer p {
+    font-size: 1rem;
+    color: #fff;
+  }
+  
+  /* Media Queries for Responsiveness */
+  @media (max-width: 768px) {
+    .product-item {
+      width: 45%;
+    }
+  
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .product-item {
+      width: 100%;
+    }
+  
+    h1 {
+      font-size: 1.2rem;
+    }
+  }
+  
+  /* Ensure the container takes full viewport height */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Minimum height of the container is the viewport height */
+  }
+  
+  .content {
+    flex: 1; /* Allows the content to grow and push the footer down */
+  }
+  
+  .footer {
+    margin-top: auto; /* Ensures the footer sticks to the bottom */
+  }
+  
