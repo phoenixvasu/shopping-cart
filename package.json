@@ -4,11 +4,15 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon backend/server.js",
-    "build": "npm install && npm run install-frontend && npm run build --prefix frontend",
+  "build": "npm install && npm install -g vite && npm run install-frontend && npm run build --prefix frontend",
     "start": "cross-env NODE_ENV=production && node backend/server.js",
     "install-frontend": "npm install --prefix frontend"
   },
   "type": "module",
+  "engines": {
+  "node": ">=14.0.0"
+}
+,
   "keywords": [],
   "author": "",
   "license": "ISC",
