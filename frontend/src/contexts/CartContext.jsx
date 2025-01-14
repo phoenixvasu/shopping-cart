@@ -3,46 +3,75 @@ import React, { createContext, useContext, useState } from 'react';
 // Create a Context for the Cart
 const CartContext = createContext();
 
-export const useCart = () => {
-  return useContext(CartContext);
-};
+// Custom hook to use the Cart Context
+export const useCart = () => useContext(CartContext);
 
+// CartProvider Component
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // Add product to cart
+  // Add a product to the cart
   const addToCart = (product) => {
     setCart((prevCart) => {
-      // Check if product is already in cart
       const existingProduct = prevCart.find((item) => item._id === product._id);
       if (existingProduct) {
-        // If product exists, increase quantity
+        // Increment quantity if the product already exists
         return prevCart.map((item) =>
           item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
         );
       } else {
-        // If product does not exist, add it to the cart with quantity 1
+        // Add new product to the cart with initial quantity of 1
         return [...prevCart, { ...product, quantity: 1 }];
       }
     });
   };
 
-  // Remove product from cart
+  // Remove a product from the cart
   const removeFromCart = (productId) => {
     setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
   };
 
-  // Update product quantity in cart
-  const updateQuantity = (productId, quantity) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item._id === productId ? { ...item, quantity } : item
-      )
-    );
+  // Update the quantity of a product in the cart
+  const updateQuantity = (productId, newQuantity) => {
+    if (newQuantity < 1) {
+      // If the quantity is less than 1, remove the product from the cart
+      removeFromCart(productId);
+    } else {
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item._id === productId ? { ...item, quantity: newQuantity } : item
+        )
+      );
+    }
+  };
+
+  // Calculate total items in the cart
+  const getTotalItems = () => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  // Calculate total price of items in the cart
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+  };
+
+  // Clear the cart
+  const clearCart = () => {
+    setCart([]);
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        getTotalItems,
+        getTotalPrice,
+        clearCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
