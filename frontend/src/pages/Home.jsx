@@ -1,19 +1,18 @@
 // src/pages/Home.jsx
 import React, { useEffect, useState } from 'react';
-import ProductItem from '../components/ProductItem'; // To display individual products
-import { getProducts } from '../services/productService'; // Service to fetch products
-import { formatCurrency } from '../utils/formatCurrency'; // Format price as currency
+import ProductItem from '../components/ProductItem';
+import { getProducts } from '../services/productService';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch products from API when the component is mounted
+  // Fetch products when the component is mounted
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const fetchedProducts = await getProducts(); // Fetch products
+        const fetchedProducts = await getProducts();
         setProducts(fetchedProducts);
         setLoading(false);
       } catch (err) {
@@ -25,13 +24,8 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="home-page">

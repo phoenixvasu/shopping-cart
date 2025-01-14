@@ -1,13 +1,21 @@
 // src/components/ProductItem.jsx
 import React from 'react';
-import { useCart } from '../contexts/CartContext'; // Access cart context
-import { formatCurrency } from '../utils/formatCurrency'; // Utility to format price into currency
+import { useCart } from '../contexts/CartContext';
+import { formatCurrency } from '../utils/formatCurrency';
 
 const ProductItem = ({ product }) => {
-  const { addToCart } = useCart(); // Access the addToCart function from context
+  const { cart, addToCart, updateQuantity } = useCart();
 
-  const handleAddToCart = () => {
-    addToCart(product); // Adds the product to the cart
+  // Find the product in the cart to get its quantity
+  const cartItem = cart.find((item) => item._id === product._id);
+  const quantity = cartItem ? cartItem.quantity : 0;
+
+  // Handle increase and decrease actions
+  const handleIncrease = () => addToCart(product);
+  const handleDecrease = () => {
+    if (quantity > 0) {
+      updateQuantity(product._id, quantity - 1);
+    }
   };
 
   return (
@@ -15,7 +23,16 @@ const ProductItem = ({ product }) => {
       <img src={product.image} alt={product.name} className="product-image" />
       <h3 className="product-name">{product.name}</h3>
       <p className="product-price">{formatCurrency(product.price)}</p>
-      <button onClick={handleAddToCart} className="add-to-cart-btn">Add to Cart</button>
+      <div className="quantity-controls">
+        <button onClick={handleDecrease} disabled={quantity === 0}>
+          −
+        </button>
+        <span>{quantity}</span>
+        <button onClick={handleIncrease}>+</button>
+      </div>
+      <button onClick={handleIncrease} className="add-to-cart-btn">
+        {quantity > 0 ? "Add More" : "Add to Cart"}
+      </button>
     </div>
   );
 };
