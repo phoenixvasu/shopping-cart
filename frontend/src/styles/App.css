@@ -292,7 +292,7 @@
   cursor: not-allowed;
 }
 
-.quantity-btn:hover {
+.quantity-btn{
   background: #0056b3;
 }
 
