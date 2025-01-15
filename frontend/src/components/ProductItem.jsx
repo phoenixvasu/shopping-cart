@@ -1,4 +1,3 @@
-// src/components/ProductItem.jsx
 import React from 'react';
 import { useCart } from '../contexts/CartContext';
 import { formatCurrency } from '../utils/formatCurrency';
@@ -24,11 +23,13 @@ const ProductItem = ({ product }) => {
       <h3 className="product-name">{product.name}</h3>
       <p className="product-price">{formatCurrency(product.price)}</p>
       <div className="quantity-controls">
-        <button onClick={handleDecrease} disabled={quantity === 0}>
+        <button onClick={handleDecrease} disabled={quantity === 0} className="quantity-btn">
           −
         </button>
-        <span>{quantity}</span>
-        <button onClick={handleIncrease}>+</button>
+        <span className="quantity-display">{quantity}</span>
+        <button onClick={handleIncrease} className="quantity-btn">
+          +
+        </button>
       </div>
       <button onClick={handleIncrease} className="add-to-cart-btn">
         {quantity > 0 ? "Add More" : "Add to Cart"}

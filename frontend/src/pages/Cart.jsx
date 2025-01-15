@@ -1,29 +1,26 @@
-// src/pages/Cart.jsx
 import React from 'react';
-import { useCart } from '../contexts/CartContext'; // Access cart context to manage cart items
-import CartItem from '../components/CartItem'; // Import the CartItem component to display each item
-import CartSummary from '../components/CartSummary'; // Import CartSummary component to show total price and checkout
+import { useCart } from '../contexts/CartContext';
+import CartItem from '../components/CartItem';
+import CartSummary from '../components/CartSummary';
 
 const Cart = () => {
-  const { cart } = useCart(); // Access the cart state from context
+  const { cart } = useCart();
 
   return (
     <div className="cart-page">
-      <h2>Your Shopping Cart</h2>
-      
-      {/* Displaying cart items */}
+      <h2 className="cart-title">Your Shopping Cart</h2>
       {cart.length > 0 ? (
-        <div className="cart-items">
-          {cart.map((product) => (
-            <CartItem key={product._id} product={product} /> // Render each cart item
-          ))}
+        <div className="cart-container">
+          <div className="cart-items">
+            {cart.map((product) => (
+              <CartItem key={product._id} product={product} />
+            ))}
+          </div>
+          <CartSummary />
         </div>
       ) : (
-        <p>Your cart is empty!</p> // Message when cart is empty
+        <p className="empty-cart">Your cart is empty!</p>
       )}
-      
-      {/* Cart summary and checkout button */}
-      <CartSummary />
     </div>
   );
 };
