@@ -1,35 +1,65 @@
 // src/components/Header.jsx
 import React from 'react';
-import { Link } from 'react-router-dom'; // For navigation
-import { useCart } from '../contexts/CartContext'; // Access cart context to display cart items count
+import { Link, useLocation } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext';
+import { ShoppingCart, Home, Settings } from 'react-feather';
 import '../styles/Header.css'; 
 
 const Header = () => {
-  const { cart } = useCart(); // Access the cart from the context
+  const { cart } = useCart();
+  const location = useLocation();
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <header className="header">
-      <div className="logo">
-        <Link to="/">
-          <h1>🛒 Shopping Cart</h1> {/* Logo with an icon */}
-        </Link>
-      </div>
-
-      <nav className="nav">
-        <ul>
-          <li>
-            <Link to="/">Home</Link> {/* Link to homepage */}
-          </li>
-          <li>
-            <Link to="/cart">
-              Cart <span className="cart-count">({cart.length})</span> {/* Link to cart page with styled count */}
+      <div className="container">
+        <div className="header-content">
+          <div className="logo">
+            <Link to="/" className="logo-link">
+              <h1>🛒 Shopping Cart</h1>
             </Link>
-          </li>
-          <li>
-            <Link to="/admin">Admin</Link> {/* Link to admin page */}
-          </li>
-        </ul>
-      </nav>
+          </div>
+
+          <nav className="nav">
+            <ul className="nav-list">
+              <li className="nav-item">
+                <Link 
+                  to="/" 
+                  className={`nav-link ${isActive('/') ? 'active' : ''}`}
+                >
+                  <Home size={20} />
+                  <span>Home</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link 
+                  to="/cart" 
+                  className={`nav-link ${isActive('/cart') ? 'active' : ''}`}
+                >
+                  <div className="cart-icon-container">
+                    <ShoppingCart size={20} />
+                    {totalItems > 0 && (
+                      <span className="cart-badge">{totalItems}</span>
+                    )}
+                  </div>
+                  <span>Cart</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link 
+                  to="/admin" 
+                  className={`nav-link ${isActive('/admin') ? 'active' : ''}`}
+                >
+                  <Settings size={20} />
+                  <span>Admin</span>
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
     </header>
   );
 };
