@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useCallback } from 'react';
+import { useApiCache, useBatchRequest } from '../hooks/useApiCache';
+import axios from 'axios';
 import { getProducts, addProduct as addProductAPI, updateProduct as updateProductAPI, deleteProduct as deleteProductAPI } from '../services/productService';
 
 const ProductContext = createContext();
@@ -12,36 +14,46 @@ export const useProducts = () => {
 };
 
 export const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchProducts();
+  const fetchProducts = useCallback(async () => {
+    const response = await axios.get('http://localhost:5000/api/products');
+    return response.data;
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const data = await getProducts();
-      setProducts(data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to fetch products');
-      console.error('Error fetching products:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data: products,
+    loading,
+    error,
+    refetch,
+    invalidate
+  } = useApiCache('products', fetchProducts);
+
+  const batchAddToCart = useBatchRequest('addToCart', async (productId, quantity) => {
+    const response = await axios.post('http://localhost:5000/api/cart/add', {
+      productId,
+      quantity
+    });
+    return response.data;
+  });
+
+  const batchUpdateCart = useBatchRequest('updateCart', async (productId, quantity) => {
+    const response = await axios.put('http://localhost:5000/api/cart/update', {
+      productId,
+      quantity
+    });
+    return response.data;
+  });
+
+  const batchRemoveFromCart = useBatchRequest('removeFromCart', async (productId) => {
+    const response = await axios.delete(`http://localhost:5000/api/cart/remove/${productId}`);
+    return response.data;
+  });
 
   const addProduct = async (productData) => {
     try {
       const newProduct = await addProductAPI(productData);
-      setProducts([...products, newProduct]);
-      setError(null);
+      refetch();
       return newProduct;
     } catch (err) {
-      setError('Failed to add product');
       console.error('Error adding product:', err);
       throw err;
     }
@@ -50,13 +62,9 @@ export const ProductProvider = ({ children }) => {
   const updateProduct = async (id, productData) => {
     try {
       const updatedProduct = await updateProductAPI(id, productData);
-      setProducts(products.map(product => 
-        product._id === id ? updatedProduct : product
-      ));
-      setError(null);
+      refetch();
       return updatedProduct;
     } catch (err) {
-      setError('Failed to update product');
       console.error('Error updating product:', err);
       throw err;
     }
@@ -65,10 +73,8 @@ export const ProductProvider = ({ children }) => {
   const deleteProduct = async (id) => {
     try {
       await deleteProductAPI(id);
-      setProducts(products.filter(product => product._id !== id));
-      setError(null);
+      refetch();
     } catch (err) {
-      setError('Failed to delete product');
       console.error('Error deleting product:', err);
       throw err;
     }
@@ -78,10 +84,14 @@ export const ProductProvider = ({ children }) => {
     products,
     loading,
     error,
+    refetch,
+    invalidate,
+    batchAddToCart,
+    batchUpdateCart,
+    batchRemoveFromCart,
     addProduct,
     updateProduct,
-    deleteProduct,
-    refreshProducts: fetchProducts
+    deleteProduct
   };
 
   return (

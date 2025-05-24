@@ -1,16 +1,24 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useProducts } from './ProductContext';
 
 // Create a Context for the Cart
 const CartContext = createContext();
 
 // Custom hook to use the Cart Context
-export const useCart = () => useContext(CartContext);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
 
 // CartProvider Component
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { batchAddToCart, batchUpdateCart, batchRemoveFromCart } = useProducts();
 
   // Load cart from localStorage on initial render
   useEffect(() => {
@@ -37,90 +45,83 @@ export const CartProvider = ({ children }) => {
     }
   }, [cart]);
 
-  // Add a product to the cart
-  const addToCart = (product) => {
+  const addToCart = useCallback(async (product, quantity) => {
     try {
-      setCart((prevCart) => {
-        const existingProduct = prevCart.find((item) => item._id === product._id);
-        if (existingProduct) {
-          // Increment quantity if the product already exists
-          return prevCart.map((item) =>
-            item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
-          );
-        } else {
-          // Add new product to the cart with initial quantity of 1
-          return [...prevCart, { ...product, quantity: 1 }];
-        }
-      });
-    } catch (err) {
-      setError('Failed to add item to cart');
-      console.error('Error adding to cart:', err);
-    }
-  };
-
-  // Remove a product from the cart
-  const removeFromCart = (productId) => {
-    try {
-      setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
-    } catch (err) {
-      setError('Failed to remove item from cart');
-      console.error('Error removing from cart:', err);
-    }
-  };
-
-  // Update the quantity of a product in the cart
-  const updateQuantity = (productId, newQuantity) => {
-    try {
-      if (newQuantity < 1) {
-        // If the quantity is less than 1, remove the product from the cart
-        removeFromCart(productId);
+      const existingItem = cart.find(item => item.product._id === product._id);
+      
+      if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        await batchUpdateCart(product._id, newQuantity);
+        setCart(cart.map(item =>
+          item.product._id === product._id
+            ? { ...item, quantity: newQuantity }
+            : item
+        ));
       } else {
-        setCart((prevCart) =>
-          prevCart.map((item) =>
-            item._id === productId ? { ...item, quantity: newQuantity } : item
-          )
-        );
+        await batchAddToCart(product._id, quantity);
+        setCart([...cart, { product, quantity }]);
       }
-    } catch (err) {
-      setError('Failed to update item quantity');
-      console.error('Error updating quantity:', err);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      throw error;
     }
-  };
+  }, [cart, batchAddToCart, batchUpdateCart]);
 
-  // Calculate total items in the cart
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
-
-  // Calculate total price of items in the cart
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-  };
-
-  // Clear the cart
-  const clearCart = () => {
+  const updateQuantity = useCallback(async (productId, quantity) => {
     try {
-      setCart([]);
-    } catch (err) {
-      setError('Failed to clear cart');
-      console.error('Error clearing cart:', err);
+      if (quantity <= 0) {
+        await removeFromCart(productId);
+        return;
+      }
+
+      await batchUpdateCart(productId, quantity);
+      setCart(cart.map(item =>
+        item.product._id === productId
+          ? { ...item, quantity }
+          : item
+      ));
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      throw error;
     }
+  }, [cart, batchUpdateCart]);
+
+  const removeFromCart = useCallback(async (productId) => {
+    try {
+      await batchRemoveFromCart(productId);
+      setCart(cart.filter(item => item.product._id !== productId));
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      throw error;
+    }
+  }, [cart, batchRemoveFromCart]);
+
+  const clearCart = useCallback(() => {
+    setCart([]);
+  }, []);
+
+  const getTotalItems = useCallback(() => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  }, [cart]);
+
+  const getTotalPrice = useCallback(() => {
+    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  }, [cart]);
+
+  const value = {
+    cart,
+    isLoading,
+    error,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+    getTotalItems,
+    getTotalPrice
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        isLoading,
-        error,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        getTotalItems,
-        getTotalPrice,
-        clearCart,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );
