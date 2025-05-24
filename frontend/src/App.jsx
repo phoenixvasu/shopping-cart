@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -10,8 +10,6 @@ import './styles/App.css';
 const Home = lazy(() => import('./pages/Home'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Admin = lazy(() => import('./pages/Admin'));
-const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
 
 function App() {
   const { isAuthenticated, loading } = useAuth();
@@ -39,18 +37,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/cart" element={<Cart />} />
-              <Route 
-                path="/admin" 
-                element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} 
-              />
-              <Route 
-                path="/login" 
-                element={!isAuthenticated ? <Login /> : <Navigate to="/admin" />} 
-              />
-              <Route 
-                path="/register" 
-                element={!isAuthenticated ? <Register /> : <Navigate to="/admin" />} 
-              />
+              <Route path="/admin" element={<Admin />} />
             </Routes>
           </Suspense>
         </main>

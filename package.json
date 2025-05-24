@@ -4,13 +4,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"cross-env NODE_ENV=development nodemon backend/server.js\" \"cd frontend && npm run dev\"",
-    "build": "npm install --production=false && npm install --prefix frontend --production=false && npm run build --prefix frontend",
+  "build": "npm install --production=false && npm install --prefix frontend --production=false && npm run build --prefix frontend",
     "start": "cross-env NODE_ENV=production node backend/server.js",
     "install-frontend": "npm install --prefix frontend"
   },
   "type": "module",
   "engines": {
-    "node": ">=14.0.0"
+  "node": ">=14.0.0"
   },
   "keywords": [],
   "author": "",

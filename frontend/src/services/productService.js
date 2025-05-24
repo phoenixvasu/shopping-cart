@@ -75,10 +75,10 @@ export const deleteProduct = async (productId) => {
 export const addProduct = async (newProduct) => {
   try {
     const response = await fetch(`${API_URL}/products`, {
-      method: "POST",
+        method: "POST",
       headers: defaultHeaders,
       credentials: "include",
-      body: JSON.stringify(newProduct),
+        body: JSON.stringify(newProduct),
     });
 
     if (!response.ok) {

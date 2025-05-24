@@ -55,11 +55,11 @@ const Home = () => {
           <p>No products available at the moment.</p>
         </div>
       ) : (
-        <div className="product-list">
-          {products.map((product) => (
-            <ProductItem key={product._id} product={product} />
-          ))}
-        </div>
+      <div className="product-list">
+        {products.map((product) => (
+          <ProductItem key={product._id} product={product} />
+        ))}
+      </div>
       )}
     </div>
   );

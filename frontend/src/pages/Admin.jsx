@@ -27,7 +27,7 @@ const Admin = () => {
     if (editingProduct) {
       setEditingProduct({ ...editingProduct, [name]: value });
     } else {
-      setNewProduct({ ...newProduct, [name]: value });
+    setNewProduct({ ...newProduct, [name]: value });
     }
   };
 
@@ -68,62 +68,62 @@ const Admin = () => {
   return (
     <div className="admin-page">
       <h1>Admin Dashboard</h1>
-      
+
       <div className="admin-grid">
         {/* Add New Product Form */}
         <div className="admin-section">
-          <form onSubmit={handleAddProduct} className="add-product-form">
-            <h2>Add New Product</h2>
-            {error && <p className="error">{error}</p>}
+      <form onSubmit={handleAddProduct} className="add-product-form">
+        <h2>Add New Product</h2>
+        {error && <p className="error">{error}</p>}
 
-            <label htmlFor="name">Product Name</label>
-            <input
-              type="text"
-              name="name"
-              value={newProduct.name}
-              onChange={handleChange}
-              placeholder="Enter product name"
+        <label htmlFor="name">Product Name</label>
+        <input
+          type="text"
+          name="name"
+          value={newProduct.name}
+          onChange={handleChange}
+          placeholder="Enter product name"
               required
-            />
+        />
 
-            <label htmlFor="price">Price</label>
-            <input
-              type="number"
-              name="price"
-              value={newProduct.price}
-              onChange={handleChange}
-              placeholder="Enter price"
+        <label htmlFor="price">Price</label>
+        <input
+          type="number"
+          name="price"
+          value={newProduct.price}
+          onChange={handleChange}
+          placeholder="Enter price"
               required
               min="0"
               step="0.01"
-            />
+        />
 
-            <label htmlFor="image">Image URL</label>
-            <input
-              type="text"
-              name="image"
-              value={newProduct.image}
-              onChange={handleChange}
-              placeholder="Enter image URL"
+        <label htmlFor="image">Image URL</label>
+        <input
+          type="text"
+          name="image"
+          value={newProduct.image}
+          onChange={handleChange}
+          placeholder="Enter image URL"
               required
-            />
+        />
 
             <button type="submit">
               <Plus size={20} />
               Add Product
             </button>
-          </form>
+      </form>
         </div>
 
         {/* Product Management Section */}
         <div className="admin-section">
           <div className="product-management">
             <h2>Product Management</h2>
-            {loading ? (
+      {loading ? (
               <div className="loading-spinner" />
-            ) : (
-              <div className="product-list">
-                {products.map((product) => (
+      ) : (
+        <div className="product-list">
+          {products.map((product) => (
                   <div key={product._id} className="product-card">
                     <img src={product.image} alt={product.name} />
                     <div className="product-info">
@@ -146,8 +146,8 @@ const Admin = () => {
                         Delete
                       </button>
                     </div>
-                  </div>
-                ))}
+            </div>
+          ))}
               </div>
             )}
           </div>
