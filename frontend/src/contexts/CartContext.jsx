@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useProducts } from './ProductContext';
+import axios from 'axios';
 
 // Create a Context for the Cart
 const CartContext = createContext();
@@ -18,7 +18,6 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { batchAddToCart, batchUpdateCart, batchRemoveFromCart } = useProducts();
 
   // Load cart from localStorage on initial render
   useEffect(() => {
@@ -51,21 +50,27 @@ export const CartProvider = ({ children }) => {
       
       if (existingItem) {
         const newQuantity = existingItem.quantity + quantity;
-        await batchUpdateCart(product._id, newQuantity);
+        await axios.put('http://localhost:5000/api/cart/update', {
+          productId: product._id,
+          quantity: newQuantity
+        });
         setCart(cart.map(item =>
           item.product._id === product._id
             ? { ...item, quantity: newQuantity }
             : item
         ));
       } else {
-        await batchAddToCart(product._id, quantity);
+        await axios.post('http://localhost:5000/api/cart/add', {
+          productId: product._id,
+          quantity
+        });
         setCart([...cart, { product, quantity }]);
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
       throw error;
     }
-  }, [cart, batchAddToCart, batchUpdateCart]);
+  }, [cart]);
 
   const updateQuantity = useCallback(async (productId, quantity) => {
     try {
@@ -74,7 +79,10 @@ export const CartProvider = ({ children }) => {
         return;
       }
 
-      await batchUpdateCart(productId, quantity);
+      await axios.put('http://localhost:5000/api/cart/update', {
+        productId,
+        quantity
+      });
       setCart(cart.map(item =>
         item.product._id === productId
           ? { ...item, quantity }
@@ -84,17 +92,17 @@ export const CartProvider = ({ children }) => {
       console.error('Error updating cart:', error);
       throw error;
     }
-  }, [cart, batchUpdateCart]);
+  }, [cart]);
 
   const removeFromCart = useCallback(async (productId) => {
     try {
-      await batchRemoveFromCart(productId);
+      await axios.delete(`http://localhost:5000/api/cart/remove/${productId}`);
       setCart(cart.filter(item => item.product._id !== productId));
     } catch (error) {
       console.error('Error removing from cart:', error);
       throw error;
     }
-  }, [cart, batchRemoveFromCart]);
+  }, [cart]);
 
   const clearCart = useCallback(() => {
     setCart([]);

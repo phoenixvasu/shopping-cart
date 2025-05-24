@@ -1,31 +1,46 @@
-import React, { createContext, useContext, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useApiCache, useBatchRequest } from '../hooks/useApiCache';
 import axios from 'axios';
 import { getProducts, addProduct as addProductAPI, updateProduct as updateProductAPI, deleteProduct as deleteProductAPI } from '../services/productService';
 
 const ProductContext = createContext();
 
-export const useProducts = () => {
+export function useProducts() {
   const context = useContext(ProductContext);
   if (!context) {
     throw new Error('useProducts must be used within a ProductProvider');
   }
   return context;
-};
+}
 
-export const ProductProvider = ({ children }) => {
-  const fetchProducts = useCallback(async () => {
-    const response = await axios.get('http://localhost:5000/api/products');
-    return response.data;
+export function ProductProvider({ children }) {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/products');
+        setProducts(response.data);
+        setError(null);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const {
-    data: products,
-    loading,
-    error,
+    data: productsFromApi,
+    loading: apiLoading,
+    error: apiError,
     refetch,
     invalidate
-  } = useApiCache('products', fetchProducts);
+  } = useApiCache('products', getProducts);
 
   const batchAddToCart = useBatchRequest('addToCart', async (productId, quantity) => {
     const response = await axios.post('http://localhost:5000/api/cart/add', {
@@ -99,6 +114,6 @@ export const ProductProvider = ({ children }) => {
       {children}
     </ProductContext.Provider>
   );
-};
+}
 
 export default ProductContext; 

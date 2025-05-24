@@ -1,61 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { formatCurrency } from '../utils/formatCurrency';
 
 const ProductItem = ({ product }) => {
-  const { cart, addToCart, updateQuantity } = useCart();
+  const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
 
-  // Find the product in the cart to get its quantity
-  const cartItem = cart.find((item) => item._id === product._id);
-  const quantity = cartItem ? cartItem.quantity : 0;
-
-  // Handle increase and decrease actions
-  const handleIncrease = () => addToCart(product);
-  const handleDecrease = () => {
-    if (quantity > 0) {
-      updateQuantity(product._id, quantity - 1);
-    }
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    setQuantity(1);
   };
 
   return (
-    <div className="product-item">
-      <img src={product.image} alt={product.name} className="product-image" />
-      <h3 className="product-name">{product.name}</h3>
-      <p className="price">{formatCurrency(product.price)}</p>
+    <div className="product-item fade-in">
+      <div className="product-image-container">
+        <img
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          className="loaded"
+        />
+      </div>
+      <h3>{product.name}</h3>
+      <p className="price">${product.price.toFixed(2)}</p>
       <div className="quantity-controls">
-        <button 
-          onClick={handleDecrease} 
-          disabled={quantity === 0} 
+        <button
           className="quantity-btn"
-          aria-label="Decrease quantity"
+          onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+          disabled={quantity <= 1}
         >
-          −
+          -
         </button>
         <span className="quantity-display">{quantity}</span>
-        <button 
-          onClick={handleIncrease} 
+        <button
           className="quantity-btn"
-          aria-label="Increase quantity"
+          onClick={() => setQuantity(prev => prev + 1)}
         >
           +
         </button>
       </div>
-      <button 
-        onClick={handleIncrease} 
+      <button
         className="add-to-cart-btn"
-        aria-label={quantity > 0 ? "Add more to cart" : "Add to cart"}
+        onClick={handleAddToCart}
       >
-        {quantity > 0 ? (
-          <>
-            <span>Add More</span>
-            <span>+</span>
-          </>
-        ) : (
-          <>
-            <span>Add to Cart</span>
-            <span>→</span>
-          </>
-        )}
+        Add to Cart
       </button>
     </div>
   );

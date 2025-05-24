@@ -1,40 +1,14 @@
 // src/pages/Home.jsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useProducts } from '../contexts/ProductContext';
 import ProductItem from '../components/ProductItem';
-import { getProducts } from '../services/productService';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  // Fetch products when the component is mounted
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError('');
-        const fetchedProducts = await getProducts();
-        console.log('Fetched products:', fetchedProducts);
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error in Home component:', err);
-        setError(err.message || 'Error fetching products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const { products, loading, error } = useProducts();
 
   if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading products...</p>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -55,11 +29,11 @@ const Home = () => {
           <p>No products available at the moment.</p>
         </div>
       ) : (
-      <div className="product-list">
-        {products.map((product) => (
-          <ProductItem key={product._id} product={product} />
-        ))}
-      </div>
+        <div className="product-list">
+          {products.map((product) => (
+            <ProductItem key={product._id} product={product} />
+          ))}
+        </div>
       )}
     </div>
   );
