@@ -1,11 +1,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
-import { ShoppingCart, Home, Settings } from 'react-feather';
+import { ShoppingCart, Home } from 'react-feather';
 
 const Navbar = () => {
-  const { user } = useAuth();
   const { cart } = useCart();
   const location = useLocation();
 
@@ -38,15 +36,12 @@ const Navbar = () => {
             )}
           </Link>
 
-          {user?.isAdmin && (
-            <Link 
-              to="/admin" 
-              className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
-            >
-              <Settings size={20} />
-              <span>Admin</span>
-            </Link>
-          )}
+          <Link 
+            to="/admin" 
+            className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
+          >
+            Admin
+          </Link>
         </div>
       </div>
     </nav>
