@@ -19,6 +19,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5073",
     "https://shopping-cart-frontend.onrender.com",
+    "https://shopping-cart-8.onrender.com",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -42,7 +43,22 @@ if (process.env.NODE_ENV === "production") {
     path.join(__dirname, "/frontend/dist")
   );
 
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+  // Serve static files with proper MIME types
+  app.use(
+    express.static(path.join(__dirname, "/frontend/dist"), {
+      setHeaders: (res, path) => {
+        if (path.endsWith(".js")) {
+          res.setHeader("Content-Type", "application/javascript");
+        } else if (path.endsWith(".css")) {
+          res.setHeader("Content-Type", "text/css");
+        } else if (path.endsWith(".html")) {
+          res.setHeader("Content-Type", "text/html");
+        }
+      },
+    })
+  );
+
+  // Handle all other routes by serving index.html
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
   });
