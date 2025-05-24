@@ -1274,8 +1274,9 @@ h3 {
 
 /* Navbar Styles */
 .navbar {
-  background-color: var(--card-background);
-  box-shadow: var(--shadow);
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -1284,7 +1285,7 @@ h3 {
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1294,44 +1295,38 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
   text-decoration: none;
-  transition: var(--transition);
-}
-
-.navbar-brand:hover {
-  color: var(--secondary-color);
-  transform: translateY(-1px);
+  color: #333;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .navbar-links {
   display: flex;
-  align-items: center;
   gap: 1.5rem;
+  align-items: center;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--text-color);
   text-decoration: none;
+  color: #666;
   font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: var(--transition);
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 .nav-link:hover {
-  color: var(--primary-color);
-  background-color: rgba(37, 99, 235, 0.1);
+  color: #333;
+  background-color: #f5f5f5;
 }
 
 .nav-link.active {
-  color: var(--primary-color);
-  background-color: rgba(37, 99, 235, 0.1);
+  color: #007bff;
+  background-color: #e6f3ff;
 }
 
 .cart-link {
@@ -1342,26 +1337,23 @@ h3 {
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: var(--accent-color);
+  background-color: #ff4444;
   color: white;
   font-size: 0.75rem;
-  font-weight: 600;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
 }
 
-/* Responsive Navbar */
+/* Responsive Design */
 @media (max-width: 768px) {
   .navbar-container {
-    padding: 1rem;
+    padding: 0 15px;
   }
 
-  .navbar-brand span {
-    display: none;
+  .navbar-links {
+    gap: 1rem;
   }
 
   .nav-link span {
@@ -1370,11 +1362,6 @@ h3 {
 
   .nav-link {
     padding: 0.5rem;
-  }
-
-  .cart-badge {
-    top: -5px;
-    right: -5px;
   }
 }
 
@@ -1506,4 +1493,18 @@ h3 {
 
 .product-item img.loaded {
   opacity: 1;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }

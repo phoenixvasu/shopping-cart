@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import productRoutes from "./routes/product.route.js";
 
@@ -25,12 +26,12 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200,
+  exposedHeaders: ["Set-Cookie"],
 };
 
-// Apply CORS middleware before other middleware
+// Apply middleware
 app.use(cors(corsOptions));
-
-// Other middleware
+app.use(cookieParser());
 app.use(express.json());
 
 // Routes
