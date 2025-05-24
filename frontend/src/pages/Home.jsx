@@ -12,11 +12,15 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
+        setError('');
         const fetchedProducts = await getProducts();
+        console.log('Fetched products:', fetchedProducts);
         setProducts(fetchedProducts);
-        setLoading(false);
       } catch (err) {
-        setError('Error fetching products');
+        console.error('Error in Home component:', err);
+        setError(err.message || 'Error fetching products');
+      } finally {
         setLoading(false);
       }
     };
@@ -24,17 +28,39 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>Oops! Something went wrong</h2>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    );
+  }
 
   return (
     <div className="home-page">
       <h1>Welcome to the Shopping Cart!</h1>
-      <div className="product-list">
-        {products.map((product) => (
-          <ProductItem key={product._id} product={product} />
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <div className="no-products">
+          <p>No products available at the moment.</p>
+        </div>
+      ) : (
+        <div className="product-list">
+          {products.map((product) => (
+            <ProductItem key={product._id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

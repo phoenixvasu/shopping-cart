@@ -3,26 +3,27 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon backend/server.js",
-  "build": "npm install --production=false && npm install --prefix frontend --production=false && npm run build --prefix frontend",
-    "start": "cross-env NODE_ENV=production && node backend/server.js",
+    "dev": "concurrently \"cross-env NODE_ENV=development nodemon backend/server.js\" \"cd frontend && npm run dev\"",
+    "build": "npm install --production=false && npm install --prefix frontend --production=false && npm run build --prefix frontend",
+    "start": "cross-env NODE_ENV=production node backend/server.js",
     "install-frontend": "npm install --prefix frontend"
   },
   "type": "module",
   "engines": {
-  "node": ">=14.0.0"
-}
-,
+    "node": ">=14.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.9.2"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "nodemon": "^3.1.9"
   }

@@ -21,18 +21,41 @@ const ProductItem = ({ product }) => {
     <div className="product-item">
       <img src={product.image} alt={product.name} className="product-image" />
       <h3 className="product-name">{product.name}</h3>
-      <p className="product-price">{formatCurrency(product.price)}</p>
+      <p className="price">{formatCurrency(product.price)}</p>
       <div className="quantity-controls">
-        <button onClick={handleDecrease} disabled={quantity === 0} className="quantity-btn">
+        <button 
+          onClick={handleDecrease} 
+          disabled={quantity === 0} 
+          className="quantity-btn"
+          aria-label="Decrease quantity"
+        >
           −
         </button>
         <span className="quantity-display">{quantity}</span>
-        <button onClick={handleIncrease} className="quantity-btn">
+        <button 
+          onClick={handleIncrease} 
+          className="quantity-btn"
+          aria-label="Increase quantity"
+        >
           +
         </button>
       </div>
-      <button onClick={handleIncrease} className="add-to-cart-btn">
-        {quantity > 0 ? "Add More" : "Add to Cart"}
+      <button 
+        onClick={handleIncrease} 
+        className="add-to-cart-btn"
+        aria-label={quantity > 0 ? "Add more to cart" : "Add to cart"}
+      >
+        {quantity > 0 ? (
+          <>
+            <span>Add More</span>
+            <span>+</span>
+          </>
+        ) : (
+          <>
+            <span>Add to Cart</span>
+            <span>→</span>
+          </>
+        )}
       </button>
     </div>
   );
