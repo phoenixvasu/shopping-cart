@@ -3,6 +3,8 @@ import { useApiCache, useBatchRequest } from '../hooks/useApiCache';
 import axios from 'axios';
 import { getProducts, addProduct as addProductAPI, updateProduct as updateProductAPI, deleteProduct as deleteProductAPI } from '../services/productService';
 
+const API_URL = 'https://shopping-cart-8.onrender.com/api';
+
 const ProductContext = createContext();
 
 export function useProducts() {
@@ -21,10 +23,11 @@ export function ProductProvider({ children }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/products');
-        setProducts(response.data);
+        const response = await axios.get(`${API_URL}/products`);
+        setProducts(response.data.data || response.data);
         setError(null);
       } catch (err) {
+        console.error('Error fetching products:', err);
         setError(err.message || 'Failed to fetch products');
       } finally {
         setLoading(false);
@@ -43,7 +46,7 @@ export function ProductProvider({ children }) {
   } = useApiCache('products', getProducts);
 
   const batchAddToCart = useBatchRequest('addToCart', async (productId, quantity) => {
-    const response = await axios.post('http://localhost:5000/api/cart/add', {
+    const response = await axios.post(`${API_URL}/cart/add`, {
       productId,
       quantity
     });
@@ -51,7 +54,7 @@ export function ProductProvider({ children }) {
   });
 
   const batchUpdateCart = useBatchRequest('updateCart', async (productId, quantity) => {
-    const response = await axios.put('http://localhost:5000/api/cart/update', {
+    const response = await axios.put(`${API_URL}/cart/update`, {
       productId,
       quantity
     });
@@ -59,7 +62,7 @@ export function ProductProvider({ children }) {
   });
 
   const batchRemoveFromCart = useBatchRequest('removeFromCart', async (productId) => {
-    const response = await axios.delete(`http://localhost:5000/api/cart/remove/${productId}`);
+    const response = await axios.delete(`${API_URL}/cart/remove/${productId}`);
     return response.data;
   });
 
