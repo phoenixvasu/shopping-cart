@@ -3,7 +3,7 @@ import { useApiCache, useBatchRequest } from '../hooks/useApiCache';
 import axios from 'axios';
 import { getProducts, addProduct as addProductAPI, updateProduct as updateProductAPI, deleteProduct as deleteProductAPI } from '../services/productService';
 
-const API_URL = 'https://shopping-cart-8.onrender.com/api';
+const API_URL = 'https://shopping-cart-ebon-gamma.vercel.app/api';
 
 const ProductContext = createContext();
 

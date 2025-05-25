@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const API_URL = "https://shopping-cart-8.onrender.com/api";
+const API_URL = "https://shopping-cart-ebon-gamma.vercel.app/api";
 
 const defaultHeaders = {
   "Content-Type": "application/json",
@@ -21,13 +21,13 @@ export const deleteProduct = async (id) => {
   return response.data;
 };
 
-// src/services/productService.js
-
+// Function to add a product
 export const addProduct = async (productData) => {
   const response = await axios.post(`${API_URL}/products`, productData);
   return response.data;
 };
 
+// Function to update a product
 export const updateProduct = async (id, productData) => {
   const response = await axios.put(`${API_URL}/products/${id}`, productData);
   return response.data;
