@@ -33,13 +33,21 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
+// Health check endpoint
+app.get("/api/health", async (req, res) => {
+  try {
+    await connectDB();
+    res.status(200).json({ status: "ok", message: "Server is healthy" });
+  } catch (error) {
+    console.error("Health check failed:", error);
+    res
+      .status(500)
+      .json({ status: "error", message: "Database connection failed" });
+  }
+});
+
 // Routes
 app.use("/api/products", productRoutes);
-
-// Health check endpoint
-app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
 
 if (process.env.NODE_ENV === "production") {
   console.log("Serving static files from /frontend/dist");
@@ -71,11 +79,14 @@ if (process.env.NODE_ENV === "production") {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Error:", err);
   res.status(500).json({
     success: false,
     message: "Something went wrong!",
-    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    error:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Internal server error",
   });
 });
 
