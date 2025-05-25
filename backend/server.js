@@ -19,8 +19,6 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://localhost:5073",
-    "https://shopping-cart-frontend.onrender.com",
-    "https://shopping-cart-8.onrender.com",
     "https://*.vercel.app",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -81,22 +79,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to MongoDB and start server
-const startServer = async () => {
-  try {
-    await connectDB();
-    if (process.env.NODE_ENV !== "production") {
-      app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-      });
-    }
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-};
-
-startServer();
+// Connect to MongoDB
+connectDB().catch(console.error);
 
 // Export for Vercel
 export default app;
