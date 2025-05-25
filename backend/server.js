@@ -5,8 +5,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import productRoutes from "./routes/product.route.js";
 
+// Load environment variables
 dotenv.config();
 
+// Create Express app
 const app = express();
 
 // Configure CORS
@@ -82,4 +84,5 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Export for Vercel
 export default app;
