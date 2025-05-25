@@ -21,6 +21,7 @@ const corsOptions = {
     "http://localhost:5073",
     "https://shopping-cart-frontend.onrender.com",
     "https://shopping-cart-8.onrender.com",
+    "https://*.vercel.app",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -36,6 +37,11 @@ app.use(express.json());
 
 // Routes
 app.use("/api/products", productRoutes);
+
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 if (process.env.NODE_ENV === "production") {
   console.log("Serving static files from /frontend/dist");
@@ -75,7 +81,22 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  connectDB();
-  console.log("Server is running on http://localhost:" + PORT);
-});
+// Connect to MongoDB and start server
+const startServer = async () => {
+  try {
+    await connectDB();
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+      });
+    }
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+// Export for Vercel
+export default app;

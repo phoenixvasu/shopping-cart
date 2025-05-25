@@ -21,4 +21,7 @@ export default defineConfig({
       "Content-Type": "application/javascript",
     },
   },
+  preview: {
+    port: 3000,
+  },
 });
