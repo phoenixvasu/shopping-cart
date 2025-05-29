@@ -21,7 +21,7 @@ const CartItem = ({ item }) => {
       <img src={product.image} alt={product.name} className="cart-item-image" />
       <div className="cart-item-details">
         <h3 className="cart-item-name">{product.name}</h3>
-        <p className="cart-item-price">{formatCurrency(product.price)}</p>
+        <p className="cart-item-price">{product.price.toFixed(2)}</p>
         <div className="quantity-controls">
           <button 
             onClick={handleDecrement} 

@@ -4,6 +4,7 @@ import CartItem from '../components/CartItem';
 import CartSummary from '../components/CartSummary';
 import { ShoppingBag } from 'react-feather';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const { cart, isLoading, getTotalItems } = useCart();
@@ -33,9 +34,9 @@ const Cart = () => {
             <ShoppingBag size={64} color="var(--light-text)" />
             <h3>Your cart is empty</h3>
             <p>Looks like you haven't added any items to your cart yet.</p>
-            <a href="/" className="btn">
+            <Link to="/" className="btn">
               Continue Shopping
-            </a>
+            </Link>
           </div>
         )}
       </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useCart } from '../contexts/CartContext';
-import { formatCurrency } from '../utils/formatCurrency';
-import { ShoppingBag, CreditCard } from 'react-feather';
+import { CreditCard } from 'react-feather';
 
 const CartSummary = () => {
   const { getTotalItems, getTotalPrice } = useCart();
@@ -13,17 +12,21 @@ const CartSummary = () => {
       <h3>Order Summary</h3>
       <div className="summary-row">
         <span>Items ({totalItems}):</span>
-        <span>{formatCurrency(totalPrice)}</span>
+        <span className="price">{totalPrice.toFixed(2)}</span>
       </div>
       <div className="summary-row">
         <span>Shipping:</span>
-        <span>Free</span>
+        <span className="price">Free</span>
       </div>
-      <div className="summary-row total">
+      <div className="summary-total">
         <span>Total:</span>
-        <span>{formatCurrency(totalPrice)}</span>
+        <span className="price">{totalPrice.toFixed(2)}</span>
       </div>
-      <button className="checkout-btn" disabled={totalItems === 0}>
+      <button 
+        className="checkout-btn" 
+        disabled={totalItems === 0}
+      >
+        <CreditCard size={20} style={{ marginRight: '8px' }} />
         Proceed to Checkout
       </button>
     </div>
