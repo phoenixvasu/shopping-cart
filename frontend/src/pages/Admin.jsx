@@ -11,8 +11,7 @@ const Admin = () => {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
-    image: '',
-    description: ''
+    image: ''
   });
 
   const handleInputChange = (e) => {
@@ -42,8 +41,7 @@ const Admin = () => {
     setFormData({
       name: product.name,
       price: product.price,
-      image: product.image,
-      description: product.description || ''
+      image: product.image
     });
     setIsModalOpen(true);
   };
@@ -64,8 +62,7 @@ const Admin = () => {
     setFormData({
       name: '',
       price: '',
-      image: '',
-      description: ''
+      image: ''
     });
   };
 
@@ -104,9 +101,6 @@ const Admin = () => {
                 <div className="product-info">
                   <h3>{product.name}</h3>
                   <p className="price">${product.price}</p>
-                  {product.description && (
-                    <p className="description">{product.description}</p>
-                  )}
                 </div>
                 <div className="product-actions">
                   <button
@@ -176,18 +170,6 @@ const Admin = () => {
                   onChange={handleInputChange}
                   required
                   placeholder="Enter image URL"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  placeholder="Enter product description"
-                  rows="4"
                 />
               </div>
 
