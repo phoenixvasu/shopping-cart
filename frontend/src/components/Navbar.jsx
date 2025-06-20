@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import { ShoppingCart, Home } from 'react-feather';
 
 const Navbar = () => {
   const { cart } = useCart();
+  const { user, logout } = useAuth();
   const location = useLocation();
 
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
@@ -36,12 +38,26 @@ const Navbar = () => {
             )}
           </Link>
 
-          <Link 
-            to="/admin" 
-            className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
-          >
-            Admin
-          </Link>
+          {user && user.role === 'admin' && (
+            <Link 
+              to="/admin" 
+              className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
+            >
+              Admin
+            </Link>
+          )}
+
+          {!user ? (
+            <>
+              <Link to="/login" className="nav-link">Login</Link>
+              <Link to="/signup" className="nav-link">Sign Up</Link>
+            </>
+          ) : (
+            <>
+              <span className="nav-user">{user.name}</span>
+              <button className="nav-link logout-btn" onClick={logout}>Logout</button>
+            </>
+          )}
         </div>
       </div>
     </nav>

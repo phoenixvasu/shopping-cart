@@ -1,13 +1,23 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
 import './styles/App.css';
+import { useAuth } from './contexts/AuthContext';
 
-// Lazy load components
-const Home = React.lazy(() => import('./pages/Home'));
-const Cart = React.lazy(() => import('./pages/Cart'));
-const Admin = React.lazy(() => import('./pages/Admin'));
+import Home from './pages/Home';
+import Cart from './pages/Cart';
+import Admin from './pages/Admin';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+
+function ProtectedRoute({ children, adminOnly = false }) {
+  const { user, loading } = useAuth();
+  if (loading) return <LoadingSpinner />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (adminOnly && user.role !== 'admin') return <Navigate to="/" replace />;
+  return children;
+}
 
 function App() {
   return (
@@ -15,13 +25,25 @@ function App() {
       <div className="app">
         <Navbar />
         <main className="main-content">
-          <Suspense fallback={<LoadingSpinner />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/admin" element={<Admin />} />
-            </Routes>
-          </Suspense>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } />
+            <Route path="/cart" element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute adminOnly={true}>
+                <Admin />
+              </ProtectedRoute>
+            } />
+          </Routes>
         </main>
       </div>
     </Router>

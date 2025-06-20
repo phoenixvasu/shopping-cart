@@ -4,6 +4,8 @@ import { connectDB } from "./config/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import productRoutes from "./routes/product.route.js";
+import authRoutes from "./routes/auth.route.js";
+import cartRoutes from "./routes/cart.route.js";
 
 // Load environment variables
 dotenv.config();
@@ -11,10 +13,10 @@ dotenv.config();
 // Create Express app
 const app = express();
 
-// Configure CORS
+// Configure CORS (must be at the very top)
 app.use(
   cors({
-    origin: true,
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -71,6 +73,9 @@ app.use(
   productRoutes
 );
 
+app.use("/api/auth", authRoutes);
+app.use("/api/cart", cartRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error("Error:", err);
@@ -86,3 +91,7 @@ app.use((err, req, res, next) => {
 
 // Export for Vercel
 export default app;
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(5000, () => console.log("Server running on 5000"));
+}

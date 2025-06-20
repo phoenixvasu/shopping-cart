@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import * as cartAPI from '../services/cartService';
 
 // Create a Context for the Cart
 const CartContext = createContext();
@@ -14,71 +16,117 @@ export const useCart = () => {
 
 // CartProvider Component
 export const CartProvider = ({ children }) => {
+  const { user } = useAuth();
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load cart from localStorage on initial render
+  // Load cart from backend or localStorage on mount or user change
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
-        setCart([]);
+    const loadCart = async () => {
+      setIsLoading(true);
+      if (user) {
+        try {
+          const backendCart = await cartAPI.getCart();
+          setCart(backendCart.items || []);
+        } catch {
+          setCart([]);
+        }
+      } else {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          try {
+            setCart(JSON.parse(savedCart));
+          } catch {
+            setCart([]);
+          }
+        } else {
+          setCart([]);
+        }
       }
-    }
-  }, []);
+      setIsLoading(false);
+    };
+    loadCart();
+  }, [user]);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage for guests
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
+    if (!user) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+  }, [cart, user]);
 
   const addToCart = async (product, quantity = 1) => {
     setIsLoading(true);
     try {
-      setCart(prevCart => {
-        const existingItem = prevCart.find(item => item.product._id === product._id);
-        
-        if (existingItem) {
-          // Update quantity if item exists
-          return prevCart.map(item =>
-            item.product._id === product._id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
-          );
-        } else {
-          // Add new item
-          return [...prevCart, { product, quantity }];
-        }
-      });
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      throw error;
+      if (user) {
+        const backendCart = await cartAPI.addOrUpdateItem(product._id, quantity);
+        setCart(backendCart.items || []);
+      } else {
+        setCart(prevCart => {
+          const existingItem = prevCart.find(item => item.product._id === product._id);
+          if (existingItem) {
+            return prevCart.map(item =>
+              item.product._id === product._id
+                ? { ...item, quantity: item.quantity + quantity }
+                : item
+            );
+          } else {
+            return [...prevCart, { product, quantity }];
+          }
+        });
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const removeFromCart = (productId) => {
-    setCart(prevCart => prevCart.filter(item => item.product._id !== productId));
+  const removeFromCart = async (productId) => {
+    if (user) {
+      setIsLoading(true);
+      try {
+        const backendCart = await cartAPI.removeItem(productId);
+        setCart(backendCart.items || []);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setCart(prevCart => prevCart.filter(item => item.product._id !== productId));
+    }
   };
 
-  const updateQuantity = (productId, newQuantity) => {
+  const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) return;
-    
-    setCart(prevCart =>
-      prevCart.map(item =>
-        item.product._id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
-    );
+    if (user) {
+      setIsLoading(true);
+      try {
+        const backendCart = await cartAPI.addOrUpdateItem(productId, newQuantity);
+        setCart(backendCart.items || []);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setCart(prevCart =>
+        prevCart.map(item =>
+          item.product._id === productId
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
+      );
+    }
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const clearCart = async () => {
+    if (user) {
+      setIsLoading(true);
+      try {
+        const backendCart = await cartAPI.clearCart();
+        setCart(backendCart.items || []);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setCart([]);
+    }
   };
 
   const getTotalItems = () => {
@@ -86,7 +134,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return cart.reduce((total, item) => {
+      const price = item.product.price || (item.product.data && item.product.data.price) || 0;
+      return total + (price * item.quantity);
+    }, 0);
   };
 
   const value = {
