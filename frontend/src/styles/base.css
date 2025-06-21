@@ -24,8 +24,9 @@ h3 {
 
 p {
   font-size: 1rem;
-  color: var(--light-text);
+  color: var(--text-color);
   line-height: 1.6;
+  opacity: 0.9;
 }
 
 /* Header and Footer Styles */
@@ -125,8 +126,9 @@ footer {
 .no-products {
   text-align: center;
   padding: 3rem;
-  color: var(--light-text);
+  color: var(--text-color);
   font-size: 1.2rem;
+  opacity: 0.8;
 }
 
 .success-message {
@@ -136,6 +138,7 @@ footer {
   border-radius: 0.5rem;
   margin: 1rem 0;
   text-align: center;
+  font-weight: 500;
 }
 
 /* Responsive Design */

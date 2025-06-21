@@ -18,7 +18,7 @@ const Header = () => {
         <div className="header-content">
           <div className="logo">
             <Link to="/" className="logo-link">
-              <h1>🛒 Shopping Cart</h1>
+              <h1>NexCart</h1>
             </Link>
           </div>
 
