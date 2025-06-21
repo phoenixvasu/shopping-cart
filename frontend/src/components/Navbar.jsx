@@ -15,8 +15,13 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-brand">
-          <Home size={24} />
-          <span>Shop</span>
+          <div className="logo-container">
+            <span className="logo-icon">🛒</span>
+            <span className="logo-text">
+              <span className="logo-nex">Nex</span>
+              <span className="logo-cart">Cart</span>
+            </span>
+          </div>
         </Link>
 
         <div className="navbar-links">

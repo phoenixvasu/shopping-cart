@@ -1,4 +1,4 @@
-/* src/styles/App.css */
+/* src/styles/main.css */
 
 /* Import modular CSS files */
 @import './variables.css';
@@ -11,4 +11,4 @@
 @import './cart.css';
 @import './Header.css';
 @import './Footer.css';
-@import './product.css';
+@import './product.css'; 

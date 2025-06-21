@@ -27,9 +27,17 @@ const Signup = () => {
     <div className="auth-bg">
       <div className="auth-card signup-card">
         <div className="auth-header">
-          <div className="auth-logo">🛒</div>
-          <h2 className="auth-title">Create Account</h2>
-          <p className="auth-subtitle">Sign up to start shopping!</p>
+          <div className="auth-logo">
+            <div className="logo-container">
+              <span className="logo-icon">🛒</span>
+              <span className="logo-text">
+                <span className="logo-nex">Nex</span>
+                <span className="logo-cart">Cart</span>
+              </span>
+            </div>
+          </div>
+          <h2 className="auth-title">Join NexCart</h2>
+          <p className="auth-subtitle">Create your account and start shopping!</p>
         </div>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
@@ -68,7 +76,7 @@ const Signup = () => {
               autoComplete="new-password"
             />
           </div>
-          <button type="submit" className="auth-btn" disabled={loading}>{loading ? 'Signing up...' : 'Sign Up'}</button>
+          <button type="submit" className="auth-btn" disabled={loading}>{loading ? 'Creating Account...' : 'Create Account'}</button>
           {formError && <div className="error-message">{formError}</div>}
         </form>
         <div className="auth-footer">

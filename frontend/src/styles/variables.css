@@ -1,0 +1,102 @@
+/* src/styles/variables.css */
+
+/* Global Styles */
+:root {
+  /* NexCart Color Palette (Updated - Warm Theme) */
+  --primary-color: #C40C0C;      /* Crimson Red – Primary buttons, key actions */
+  --secondary-color: #FF6500;    /* Tangerine – Secondary buttons, support CTAs */
+  --accent-color: #FF8A08;       /* Warm Orange – badges, links, highlights */
+  --neutral-color: #FFC100;      /* Golden Yellow – background, base color */
+
+  /* Derived Colors */
+  --primary-dark: rgb(196, 12, 12);     /* Darker red variant */
+  --secondary-dark: rgb(255, 101, 0);   /* Reused from palette */
+  --accent-dark: rgb(255, 138, 8);      /* Reused from palette */
+  --neutral-dark: rgb(255, 193, 0);     /* Reused from palette */
+
+  /* Text Colors */
+  --text-color: #C40C0C;         /* Deep Red for high contrast text */
+  --light-text: #FF8A08;         /* Soft orange for secondary text */
+
+  /* Background Colors */
+  --background-color: #FFC100;   /* Golden background */
+  --card-background: #FF8A08;    /* Warm orange for cards/containers */
+  --border-color: #FF6500;       /* Tangerine border */
+
+  /* Status Colors */
+  --success-color: #FF8A08;      /* Positive (friendly warm tone) */
+  --error-color: #C40C0C;        /* Alert/Error in deep red */
+
+  /* Shadows and Effects */
+  --shadow: 0 4px 6px -1px rgba(196, 12, 12, 0.2), 0 2px 4px -1px rgba(255, 138, 8, 0.1);
+  --transition: all 0.3s ease;
+}
+
+
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base Body Styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* App Container */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  padding: 2rem 0;
+  min-height: calc(100vh - 200px);
+}
+
+/* Container Styles */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Products Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+} 

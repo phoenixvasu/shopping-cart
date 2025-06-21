@@ -26,9 +26,17 @@ const Login = () => {
     <div className="auth-bg">
       <div className="auth-card login-card">
         <div className="auth-header">
-          <div className="auth-logo">🛒</div>
+          <div className="auth-logo">
+            <div className="logo-container">
+              <span className="logo-icon">🛒</span>
+              <span className="logo-text">
+                <span className="logo-nex">Nex</span>
+                <span className="logo-cart">Cart</span>
+              </span>
+            </div>
+          </div>
           <h2 className="auth-title">Welcome Back</h2>
-          <p className="auth-subtitle">Login to your account</p>
+          <p className="auth-subtitle">Login to your NexCart account</p>
         </div>
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">

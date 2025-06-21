@@ -1,7 +1,7 @@
 /* src/styles/Header.css */
 
 .header {
-  background-color: var(--card-background);
+  background-color: var(--accent-color);
   box-shadow: var(--shadow);
   position: sticky;
   top: 0;
@@ -46,7 +46,7 @@
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
-  color: var(--light-text);
+  color: var(--text-color);
   font-weight: 500;
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -54,13 +54,13 @@
 }
 
 .nav-link:hover {
-  color: var(--primary-color);
-  background-color: rgba(37, 99, 235, 0.1);
+  color: white;
+  background-color: var(--primary-color);
 }
 
 .nav-link.active {
-  color: var(--primary-color);
-  background-color: rgba(37, 99, 235, 0.1);
+  color: white;
+  background-color: var(--primary-color);
 }
 
 .cart-icon-container {
@@ -73,7 +73,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: var(--accent-color);
+  background-color: var(--primary-color);
   color: white;
   border-radius: 50%;
   width: 20px;

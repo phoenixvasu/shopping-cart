@@ -1,8 +1,8 @@
 /* src/styles/Footer.css */
 
 .footer {
-  background-color: #1a1a2e; /* Dark blue-gray background */
-  color: #fff; /* White text color */
+  background-color: var(--secondary-color);
+  color: #fff;
   padding: 20px 0;
   text-align: center;
   position: relative;
@@ -36,8 +36,8 @@
   display: inline-block;
   width: 40px;
   height: 40px;
-  background-color: #fff; /* Icon background color */
-  color: #1a1a2e; /* Icon color */
+  background-color: #fff;
+  color: var(--secondary-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
