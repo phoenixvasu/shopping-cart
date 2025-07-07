@@ -14,15 +14,11 @@ dotenv.config();
 const app = express();
 
 // Configure CORS (must be at the very top)
-const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  "https://shopping-cart-uwys.vercel.app", // deployed frontend (replace with actual if different)
-];
+const allowedOrigins = ["https://shopping-cart-uwys.vercel.app"];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps, curl, etc.)
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
         const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
