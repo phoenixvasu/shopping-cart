@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const API_URL = "https://shopping-cart-ebon-gamma.vercel.app/api";
+const API_URL = "https://shopping-cart-uwys.vercel.app/api";
 
 const defaultHeaders = {
   "Content-Type": "application/json",
