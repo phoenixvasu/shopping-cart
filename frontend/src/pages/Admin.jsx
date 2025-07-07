@@ -1,18 +1,31 @@
 // src/pages/Admin.jsx
 import React, { useState } from 'react';
 import { useProducts } from '../contexts/ProductContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Plus, Edit2, Trash2, X, Shield } from 'react-feather';
 import LoadingSpinner from '../components/LoadingSpinner';
 
+const CATEGORY_OPTIONS = [
+  'General', 'Electronics', 'Clothing', 'Books', 'Home', 'Toys', 'Beauty', 'Sports', 'Other'
+];
+
 const Admin = () => {
+  const { user } = useAuth();
   const { products, loading, error, addProduct, updateProduct, deleteProduct } = useProducts();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
-    image: ''
+    image: '',
+    category: 'General',
+    stock: 0
   });
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+  const [formLoading, setFormLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+  const [deleteSuccess, setDeleteSuccess] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,19 +33,33 @@ const Admin = () => {
       ...prev,
       [name]: value
     }));
+    setFormError('');
+    setFormSuccess('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError('');
+    setFormSuccess('');
+    const validation = validateForm();
+    if (validation) {
+      setFormError(validation);
+      return;
+    }
+    setFormLoading(true);
     try {
       if (editingProduct) {
         await updateProduct(editingProduct._id, formData);
+        setFormSuccess('Product updated successfully!');
       } else {
         await addProduct(formData);
+        setFormSuccess('Product added successfully!');
       }
-      handleCloseModal();
+      setTimeout(() => handleCloseModal(), 900);
     } catch (err) {
-      console.error('Error saving product:', err);
+      setFormError(err?.response?.data?.message || err.message || 'Error saving product.');
+    } finally {
+      setFormLoading(false);
     }
   };
 
@@ -41,17 +68,26 @@ const Admin = () => {
     setFormData({
       name: product.name,
       price: product.price,
-      image: product.image
+      image: product.image,
+      category: product.category || 'General',
+      stock: product.stock ?? 0
     });
+    setFormError('');
+    setFormSuccess('');
     setIsModalOpen(true);
   };
 
   const handleDelete = async (productId) => {
+    setDeleteError('');
+    setDeleteSuccess('');
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await deleteProduct(productId);
+        setDeleteSuccess('Product deleted successfully!');
+        setTimeout(() => setDeleteSuccess(''), 1200);
       } catch (err) {
-        console.error('Error deleting product:', err);
+        setDeleteError(err?.response?.data?.message || err.message || 'Error deleting product.');
+        setTimeout(() => setDeleteError(''), 2000);
       }
     }
   };
@@ -62,9 +98,27 @@ const Admin = () => {
     setFormData({
       name: '',
       price: '',
-      image: ''
+      image: '',
+      category: 'General',
+      stock: 0
     });
+    setFormError('');
+    setFormSuccess('');
+    setFormLoading(false);
   };
+
+  const validateForm = () => {
+    if (!formData.name.trim()) return 'Product name is required.';
+    if (!formData.price || isNaN(formData.price) || Number(formData.price) <= 0) return 'Price must be a positive number.';
+    if (!formData.image.trim() || !/^https?:\/\//.test(formData.image)) return 'Image URL must be valid.';
+    if (!formData.category) return 'Category is required.';
+    if (formData.stock === '' || isNaN(formData.stock) || Number(formData.stock) < 0) return 'Stock must be 0 or greater.';
+    return '';
+  };
+
+  if (!user || user.role !== 'admin') {
+    return <div className="forbidden-page"><h2>Forbidden</h2><p>Admin access required.</p></div>;
+  }
 
   if (loading) return <LoadingSpinner />;
   if (error) {
@@ -92,6 +146,8 @@ const Admin = () => {
       <div className="admin-section">
         <h2 className="admin-section-title">Product Management</h2>
         <div className="admin-divider" />
+        {deleteError && <div className="error-message">{deleteError}</div>}
+        {deleteSuccess && <div className="success-message">{deleteSuccess}</div>}
         <div className="product-list modern-card-grid">
           {products.length === 0 && <div className="empty-state">No products found.</div>}
           {products.map((product) => (
@@ -114,6 +170,7 @@ const Admin = () => {
                 <button
                   className="delete-btn"
                   onClick={() => handleDelete(product._id)}
+                  disabled={formLoading}
                 >
                   <Trash2 size={18} />
                   Delete
@@ -126,11 +183,13 @@ const Admin = () => {
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content modern-modal">
-            <button className="close-btn" onClick={handleCloseModal}>
+            <button className="close-btn" onClick={handleCloseModal} disabled={formLoading}>
               <X size={24} />
             </button>
             <h2 className="modal-title">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
             <form onSubmit={handleSubmit} className="product-form">
+              {formError && <div className="error-message">{formError}</div>}
+              {formSuccess && <div className="success-message">{formSuccess}</div>}
               <div className="form-group">
                 <label htmlFor="name">Product Name</label>
                 <input
@@ -141,6 +200,7 @@ const Admin = () => {
                   onChange={handleInputChange}
                   required
                   placeholder="Enter product name"
+                  disabled={formLoading}
                 />
               </div>
               <div className="form-group">
@@ -155,6 +215,7 @@ const Admin = () => {
                   min="0"
                   step="0.01"
                   placeholder="Enter price"
+                  disabled={formLoading}
                 />
               </div>
               <div className="form-group">
@@ -167,16 +228,42 @@ const Admin = () => {
                   onChange={handleInputChange}
                   required
                   placeholder="Enter image URL"
+                  disabled={formLoading}
                 />
               </div>
-              <div className="form-actions">
-                <button type="submit" className="save-btn">
-                  {editingProduct ? 'Save Changes' : 'Add Product'}
-                </button>
-                <button type="button" className="cancel-btn" onClick={handleCloseModal}>
-                  Cancel
-                </button>
+              <div className="form-group">
+                <label htmlFor="category">Category</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  required
+                  disabled={formLoading}
+                >
+                  {CATEGORY_OPTIONS.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
               </div>
+              <div className="form-group">
+                <label htmlFor="stock">Stock</label>
+                <input
+                  type="number"
+                  id="stock"
+                  name="stock"
+                  value={formData.stock}
+                  onChange={handleInputChange}
+                  required
+                  min="0"
+                  step="1"
+                  placeholder="Enter stock quantity"
+                  disabled={formLoading}
+                />
+              </div>
+              <button type="submit" className="save-btn" disabled={formLoading}>
+                {formLoading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
+              </button>
             </form>
           </div>
         </div>

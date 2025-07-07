@@ -1,82 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import { useCart } from '../contexts/CartContext';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useWishlist } from '../contexts/WishlistContext';
+import { useAuth } from '../contexts/AuthContext';
+import { Heart } from 'react-feather';
 
 const ProductCard = ({ product }) => {
-  const { addToCart } = useCart();
-  const [quantity, setQuantity] = useState(1);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageSrc, setImageSrc] = useState('');
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const [animating, setAnimating] = React.useState(false);
 
-  useEffect(() => {
-    // Convert image to WebP format
-    const convertToWebP = async () => {
-      try {
-        const img = new Image();
-        img.src = product.image;
-        
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          
-          // Convert to WebP with quality 0.8
-          const webpData = canvas.toDataURL('image/webp', 0.8);
-          setImageSrc(webpData);
-          setImageLoaded(true);
-        };
-      } catch (error) {
-        console.error('Error converting image to WebP:', error);
-        setImageSrc(product.image);
-        setImageLoaded(true);
-      }
-    };
+  const maxQty = product.stock || 0;
+  const outOfStock = maxQty === 0;
+  const avgRating = product.reviews && product.reviews.length ? (product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length).toFixed(2) : null;
+  const inWishlist = isInWishlist(product._id);
 
-    convertToWebP();
-  }, [product.image]);
-
-  const handleAddToCart = () => {
-    addToCart(product, quantity);
-    setQuantity(1);
+  const handleWishlist = async (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setAnimating(true);
+    if (inWishlist) {
+      await removeFromWishlist(product._id);
+    } else {
+      await addToWishlist(product._id);
+    }
+    setTimeout(() => setAnimating(false), 400);
   };
 
   return (
     <div className="product-item fade-in">
+      {user && (
+        <button
+          className={`wishlist-btn${inWishlist ? ' active' : ''}${animating ? ' animating' : ''}`}
+          onClick={handleWishlist}
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <Heart
+            size={22}
+            fill={inWishlist ? '#e52020' : 'none'}
+            color={inWishlist ? '#e52020' : '#bbb'}
+            style={{ transition: 'fill 0.2s, color 0.2s', verticalAlign: 'middle' }}
+          />
+        </button>
+      )}
       <div className="product-image-container">
-        {!imageLoaded && <div className="image-placeholder" />}
         <img
-          src={imageSrc || product.image}
+          src={product.image}
           alt={product.name}
           loading="lazy"
-          className={imageLoaded ? 'loaded' : 'loading'}
-          onLoad={() => setImageLoaded(true)}
+          className="loaded"
         />
       </div>
       <h3>{product.name}</h3>
       <p className="price">${product.price.toFixed(2)}</p>
-      <div className="quantity-controls">
-        <button
-          className="quantity-btn"
-          onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-          disabled={quantity <= 1}
-        >
-          -
-        </button>
-        <span className="quantity-display">{quantity}</span>
-        <button
-          className="quantity-btn"
-          onClick={() => setQuantity(prev => prev + 1)}
-        >
-          +
-        </button>
+      <div className="stock-status" style={{ marginBottom: 8, color: outOfStock ? '#a33a3a' : '#1a3a5d', fontWeight: 500 }}>
+        {outOfStock ? 'Out of stock' : `${maxQty} in stock`}
       </div>
-      <button
-        className="add-to-cart-btn"
-        onClick={handleAddToCart}
-      >
-        Add to Cart
+      <div className="product-rating">
+        {avgRating ? (
+          <span>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span key={i} style={{ color: i < Math.round(avgRating) ? '#FFD700' : '#ccc' }}>★</span>
+            ))}
+            <span style={{ marginLeft: 6, fontSize: '0.95em', color: '#555' }}>({avgRating})</span>
+          </span>
+        ) : (
+          <span style={{ color: '#888' }}>No reviews yet</span>
+        )}
+      </div>
+      <button className="view-details-btn" onClick={() => navigate(`/product/${product._id}`)} style={{ marginTop: 10 }}>
+        View Details
       </button>
     </div>
   );

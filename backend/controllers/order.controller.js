@@ -1,5 +1,6 @@
 import Order from "../models/order.model.js";
 import Stripe from "stripe";
+import Product from "../models/product.model.js";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2022-11-15",
 });
@@ -7,6 +8,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 export const createOrder = async (req, res) => {
   try {
     const { items, address, paymentMethodId, total } = req.body;
+    // Check stock for all items
+    for (const item of items) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        return res
+          .status(400)
+          .json({ success: false, message: `Product not found: ${item.name}` });
+      }
+      if (product.stock < item.quantity) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: `Not enough stock for ${product.name}. Only ${product.stock} left.`,
+          });
+      }
+    }
     // Create Stripe payment intent (test mode)
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(total * 100), // in cents
@@ -14,6 +32,12 @@ export const createOrder = async (req, res) => {
       payment_method: paymentMethodId,
       confirm: true,
     });
+    // Decrement stock for each product
+    for (const item of items) {
+      await Product.findByIdAndUpdate(item.product, {
+        $inc: { stock: -item.quantity },
+      });
+    }
     const order = new Order({
       user: req.user.userId,
       items,

@@ -2,12 +2,14 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import { ShoppingCart, Home } from 'react-feather';
+import { ShoppingCart, Home, Heart } from 'react-feather';
+import { useWishlist } from '../contexts/WishlistContext';
 
 const Navbar = () => {
   const { cart } = useCart();
   const { user, logout } = useAuth();
   const location = useLocation();
+  const { wishlist } = useWishlist();
 
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -50,6 +52,19 @@ const Navbar = () => {
           >
             Admin
           </Link>
+          )}
+
+          {user && (
+            <Link 
+              to="/wishlist" 
+              className={`nav-link wishlist-link ${location.pathname === '/wishlist' ? 'active' : ''}`}
+            >
+              <Heart size={20} />
+              <span>Wishlist</span>
+              {wishlist.length > 0 && (
+                <span className="wishlist-badge">{wishlist.length}</span>
+              )}
+            </Link>
           )}
 
           {!user ? (

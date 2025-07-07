@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Product from "../models/product.model.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretjwt";
 const JWT_EXPIRES_IN = "7d";
@@ -97,6 +98,43 @@ export const getCurrentUser = async (req, res) => {
     res.json({ success: true, user });
   } catch (err) {
     console.log("GetCurrentUser error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const getWishlist = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate("wishlist");
+    res.json({ success: true, wishlist: user.wishlist });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const addToWishlist = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    const { productId } = req.params;
+    if (!user.wishlist.includes(productId)) {
+      user.wishlist.push(productId);
+      await user.save();
+    }
+    const updated = await user.populate("wishlist");
+    res.json({ success: true, wishlist: updated.wishlist });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const removeFromWishlist = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    const { productId } = req.params;
+    user.wishlist = user.wishlist.filter((id) => id.toString() !== productId);
+    await user.save();
+    const updated = await user.populate("wishlist");
+    res.json({ success: true, wishlist: updated.wishlist });
+  } catch (err) {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
