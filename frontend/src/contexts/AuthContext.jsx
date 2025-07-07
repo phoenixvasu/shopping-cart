@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const res = await api.get('/api/auth/me');
+        const res = await api.get('/auth/me');
         setUser(res.data.user);
       } catch {
         setUser(null);
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (name, email, password) => {
     setError(null);
     try {
-      await api.post('/api/auth/signup', { name, email, password });
+      await api.post('/auth/signup', { name, email, password });
       await login(email, password);
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed');
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setError(null);
     try {
-      const res = await api.post('/api/auth/login', { email, password });
+      const res = await api.post('/auth/login', { email, password });
       setUser(res.data.user);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setError(null);
     try {
-      await api.post('/api/auth/logout');
+      await api.post('/auth/logout');
       setUser(null);
     } catch (err) {
       setError('Logout failed');

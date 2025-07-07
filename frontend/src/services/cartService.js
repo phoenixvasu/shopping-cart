@@ -52,21 +52,21 @@ export const updateCartQuantity = (productId, quantity) => {
 
 // Backend cart API
 export const getCart = async () => {
-  const res = await api.get("/api/cart");
+  const res = await api.get('/cart');
   return res.data.cart;
 };
 
 export const addOrUpdateItem = async (productId, quantity) => {
-  const res = await api.post("/api/cart/add", { productId, quantity });
+  const res = await api.post('/cart/add', { productId, quantity });
   return res.data.cart;
 };
 
 export const removeItem = async (productId) => {
-  const res = await api.post("/api/cart/remove", { productId });
+  const res = await api.post('/cart/remove', { productId });
   return res.data.cart;
 };
 
 export const clearCart = async () => {
-  const res = await api.post("/api/cart/clear");
+  const res = await api.post('/cart/clear');
   return res.data.cart;
 };
