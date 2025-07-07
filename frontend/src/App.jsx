@@ -4,18 +4,24 @@ import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
 import './styles/main.css';
 import { useAuth } from './contexts/AuthContext';
+import { useCart } from './contexts/CartContext';
 
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Forbidden from './pages/Forbidden';
+import Checkout from './pages/Checkout';
+import OrderHistory from './pages/OrderHistory';
 
-function ProtectedRoute({ children, adminOnly = false }) {
+function ProtectedRoute({ children, adminOnly = false, cartRequired = false }) {
   const { user, loading } = useAuth();
+  const { cart } = useCart();
   if (loading) return <LoadingSpinner />;
   if (!user) return <Navigate to="/login" replace />;
-  if (adminOnly && user.role !== 'admin') return <Navigate to="/" replace />;
+  if (adminOnly && user.role !== 'admin') return <Navigate to="/forbidden" replace />;
+  if (cartRequired && (!cart || cart.length === 0)) return <Navigate to="/cart" replace />;
   return children;
 }
 
@@ -43,6 +49,13 @@ function App() {
                 <Admin />
               </ProtectedRoute>
             } />
+            <Route path="/forbidden" element={<Forbidden />} />
+            <Route path="/checkout" element={
+              <ProtectedRoute cartRequired={true}>
+                <Checkout />
+              </ProtectedRoute>
+            } />
+            <Route path="/orders" element={<OrderHistory />} />
           </Routes>
         </main>
       </div>

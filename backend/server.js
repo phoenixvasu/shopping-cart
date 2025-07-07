@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import productRoutes from "./routes/product.route.js";
 import authRoutes from "./routes/auth.route.js";
 import cartRoutes from "./routes/cart.route.js";
+import orderRoutes from "./routes/order.route.js";
 
 // Load environment variables
 dotenv.config();
@@ -14,7 +15,10 @@ dotenv.config();
 const app = express();
 
 // Configure CORS (must be at the very top)
-const allowedOrigins = ["https://shopping-cart-uwys.vercel.app"];
+const allowedOrigins = [
+  "https://shopping-cart-uwys.vercel.app",
+  "http://localhost:5173",
+];
 
 app.use(
   cors({
@@ -82,8 +86,44 @@ app.use(
   productRoutes
 );
 
-app.use("/api/auth", authRoutes);
-app.use("/api/cart", cartRoutes);
+app.use(
+  "/api/auth",
+  async (req, res, next) => {
+    try {
+      await initializeDB();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+  authRoutes
+);
+
+app.use(
+  "/api/cart",
+  async (req, res, next) => {
+    try {
+      await initializeDB();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+  cartRoutes
+);
+
+app.use(
+  "/api/orders",
+  async (req, res, next) => {
+    try {
+      await initializeDB();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+  orderRoutes
+);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,0 +1,36 @@
+.forbidden-page {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.forbidden-page h1 {
+  font-size: 3rem;
+  color: var(--error-color, #d32f2f);
+  margin-bottom: 1rem;
+}
+
+.forbidden-page p {
+  font-size: 1.2rem;
+  color: var(--text-color, #333);
+  margin-bottom: 2rem;
+}
+
+.forbidden-page a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color, #e52020);
+  color: #fff;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.forbidden-page a:hover {
+  background: var(--primary-dark, #b71c1c);
+} 

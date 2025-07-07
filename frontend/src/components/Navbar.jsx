@@ -59,7 +59,8 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <span className="nav-user">{user.name}</span>
+              <Link to="/orders" className="nav-link">Orders</Link>
+              <span className="nav-user">{user.name}{user.role === 'admin' && <span className="admin-badge">Admin</span>}</span>
               <button className="nav-link logout-btn" onClick={logout}>Logout</button>
             </>
           )}

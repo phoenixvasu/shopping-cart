@@ -24,50 +24,55 @@ const Login = () => {
 
   return (
     <div className="auth-bg">
-      <div className="auth-card login-card">
-        <div className="auth-header">
-          <div className="auth-logo">
-            <div className="logo-container">
-              <span className="logo-icon">🛒</span>
-              <span className="logo-text">
-                <span className="logo-nex">Nex</span>
-                <span className="logo-cart">Cart</span>
-              </span>
+      <div className="auth-container">
+        <div className="auth-card login-card">
+          <div className="auth-header">
+            <div className="auth-logo">
+              <div className="logo-container">
+                <span className="logo-icon">🛒</span>
+                <span className="logo-text">
+                  <span className="logo-nex">Nex</span>
+                  <span className="logo-cart">Cart</span>
+                </span>
+              </div>
             </div>
+            <h2 className="auth-title">Welcome Back</h2>
+            <p className="auth-subtitle">Login to your NexCart account</p>
           </div>
-          <h2 className="auth-title">Welcome Back</h2>
-          <p className="auth-subtitle">Login to your NexCart account</p>
-        </div>
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
+          <p className="login-info subtle-info">
+            Both users and admins log in here. Admin features will appear automatically if you have admin access.
+          </p>
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+            </div>
+            <button type="submit" className="auth-btn" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+            {formError && <div className="error-message">{formError}</div>}
+          </form>
+          <div className="auth-footer">
+            <span>Don't have an account?</span> <Link to="/signup" className="auth-link">Sign up</Link>
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
-          </div>
-          <button type="submit" className="auth-btn" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-          {formError && <div className="error-message">{formError}</div>}
-        </form>
-        <div className="auth-footer">
-          <span>Don't have an account?</span> <Link to="/signup" className="auth-link">Sign up</Link>
         </div>
       </div>
     </div>

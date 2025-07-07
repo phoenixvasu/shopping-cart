@@ -1,7 +1,7 @@
 // src/pages/Admin.jsx
 import React, { useState } from 'react';
 import { useProducts } from '../contexts/ProductContext';
-import { Plus, Edit2, Trash2, X } from 'react-feather';
+import { Plus, Edit2, Trash2, X, Shield } from 'react-feather';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Admin = () => {
@@ -79,7 +79,8 @@ const Admin = () => {
   return (
     <div className="admin-page">
       <div className="admin-header">
-        <h1>Admin Dashboard</h1>
+        <h1 className="admin-title"><Shield size={32} style={{verticalAlign:'middle',marginRight:'0.5rem'}}/>Admin Dashboard</h1>
+        <p className="admin-subtitle">Manage your products with ease. Only admins can access this page.</p>
         <button 
           className="add-product-btn"
           onClick={() => setIsModalOpen(true)}
@@ -88,49 +89,47 @@ const Admin = () => {
           Add New Product
         </button>
       </div>
-
-      <div className="admin-grid">
-        <section className="admin-section">
-          <h2>Product Management</h2>
-          <div className="product-list">
-            {products.map((product) => (
-              <div key={product._id} className="product-card">
-                <div className="product-image">
-                  <img src={product.image} alt={product.name} />
-                </div>
-                <div className="product-info">
-                  <h3>{product.name}</h3>
-                  <p className="price">${product.price}</p>
-                </div>
-                <div className="product-actions">
-                  <button
-                    className="edit-btn"
-                    onClick={() => handleEdit(product)}
-                  >
-                    <Edit2 size={18} />
-                    Edit
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(product._id)}
-                  >
-                    <Trash2 size={18} />
-                    Delete
-                  </button>
-                </div>
+      <div className="admin-section">
+        <h2 className="admin-section-title">Product Management</h2>
+        <div className="admin-divider" />
+        <div className="product-list modern-card-grid">
+          {products.length === 0 && <div className="empty-state">No products found.</div>}
+          {products.map((product) => (
+            <div key={product._id} className="product-card modern-card">
+              <div className="product-image">
+                <img src={product.image} alt={product.name} />
               </div>
-            ))}
-          </div>
-        </section>
+              <div className="product-info">
+                <h3>{product.name}</h3>
+                <p className="price">${product.price}</p>
+              </div>
+              <div className="product-actions">
+                <button
+                  className="edit-btn"
+                  onClick={() => handleEdit(product)}
+                >
+                  <Edit2 size={18} />
+                  Edit
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDelete(product._id)}
+                >
+                  <Trash2 size={18} />
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content modern-modal">
             <button className="close-btn" onClick={handleCloseModal}>
               <X size={24} />
             </button>
-            <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+            <h2 className="modal-title">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
             <form onSubmit={handleSubmit} className="product-form">
               <div className="form-group">
                 <label htmlFor="name">Product Name</label>
@@ -144,7 +143,6 @@ const Admin = () => {
                   placeholder="Enter product name"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="price">Price</label>
                 <input
@@ -159,7 +157,6 @@ const Admin = () => {
                   placeholder="Enter price"
                 />
               </div>
-
               <div className="form-group">
                 <label htmlFor="image">Image URL</label>
                 <input
@@ -172,7 +169,6 @@ const Admin = () => {
                   placeholder="Enter image URL"
                 />
               </div>
-
               <div className="form-actions">
                 <button type="submit" className="save-btn">
                   {editingProduct ? 'Save Changes' : 'Add Product'}

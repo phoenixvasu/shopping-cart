@@ -1,11 +1,19 @@
 import React from 'react';
 import { useCart } from '../contexts/CartContext';
 import { CreditCard } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 const CartSummary = () => {
   const { getTotalItems, getTotalPrice } = useCart();
   const totalItems = getTotalItems();
   const totalPrice = getTotalPrice();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (totalItems > 0) {
+      navigate('/checkout');
+    }
+  };
 
   return (
     <div className="cart-summary">
@@ -25,6 +33,7 @@ const CartSummary = () => {
       <button 
         className="checkout-btn" 
         disabled={totalItems === 0}
+        onClick={handleCheckout}
       >
         <CreditCard size={20} style={{ marginRight: '8px' }} />
         Proceed to Checkout
