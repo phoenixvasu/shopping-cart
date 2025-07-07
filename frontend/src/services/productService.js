@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const API_URL = "https://shopping-cart-uwys.vercel.app/api";
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const defaultHeaders = {
   "Content-Type": "application/json",

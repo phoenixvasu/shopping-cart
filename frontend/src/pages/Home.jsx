@@ -25,7 +25,7 @@ const Home = () => {
       <div className="container">
         <h1 className="page-title">Our Products</h1>
         <div className="products-grid">
-          {products.map(product => (
+          {Array.isArray(products) && products.map(product => (
             <ProductItem key={product._id} product={product} />
           ))}
         </div>

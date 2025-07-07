@@ -32,6 +32,7 @@ export const signup = async (req, res) => {
       },
     });
   } catch (err) {
+    console.log("Signup error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -75,6 +76,7 @@ export const login = async (req, res) => {
       },
     });
   } catch (err) {
+    console.log("Login error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -93,6 +95,7 @@ export const getCurrentUser = async (req, res) => {
         .json({ success: false, message: "User not found" });
     res.json({ success: true, user });
   } catch (err) {
+    console.log("GetCurrentUser error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

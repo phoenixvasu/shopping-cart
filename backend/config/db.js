@@ -16,6 +16,7 @@ if (!cached) {
 }
 
 export const connectDB = async () => {
+  console.log("Attempting to connect to MongoDB...");
   if (cached.conn) {
     return cached.conn;
   }
@@ -33,6 +34,7 @@ export const connectDB = async () => {
 
   try {
     cached.conn = await cached.promise;
+    console.log("MongoDB connection established and cached.");
   } catch (e) {
     cached.promise = null;
     console.error("MongoDB connection error:", e);
