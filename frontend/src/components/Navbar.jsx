@@ -44,12 +44,12 @@ const Navbar = () => {
           </Link>
 
           {user && user.role === 'admin' && (
-            <Link 
-              to="/admin" 
-              className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
-            >
-              Admin
-            </Link>
+          <Link 
+            to="/admin" 
+            className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`}
+          >
+            Admin
+          </Link>
           )}
 
           {!user ? (
